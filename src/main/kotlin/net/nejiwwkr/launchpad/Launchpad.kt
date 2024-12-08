@@ -13,10 +13,13 @@ class Launchpad {
     private var receiver: Receiver? = null
     val padLights: Array<Int> = Array(100){_ -> 0}
 
-    // 初始化 MIDI 输入和输出设备
+    /**
+     * Initialize the launchpad device.
+     * @param names the name of your launchpad name in system
+     */
     @Throws(MidiUnavailableException::class)
     fun init(vararg names: String) {
-        logger.info("正在寻找设备...")
+        logger.info("Searching for devices...")
         val infos = MidiSystem.getMidiDeviceInfo()
         for (info in infos) {
             if (info.matches(names, "MIDIIN"))
@@ -34,7 +37,11 @@ class Launchpad {
         receiver = outputDevice!!.receiver
     }
 
-    // 处理接收到的 MIDI 消息
+    /**
+     * Process midi messages.
+     * invoke repeatedly will overwrite the process before.
+     * @param func the process
+     */
     fun process(func: MidiMessageProcessor) {
         try {
             val transmitter = inputDevice!!.transmitter
@@ -50,7 +57,11 @@ class Launchpad {
         }
     }
 
-    // 发送 MIDI 消息
+    /**
+     * Send midi messages.
+     * Midi message for launchpad is a byte array with 3 elements, including the channel, the location and the light color.
+     * @param message the message to send
+     */
     @Throws(InvalidMidiDataException::class)
     fun sendShortMessage(message: ByteArray) {
         val shortMessage = ShortMessage()
@@ -58,7 +69,13 @@ class Launchpad {
         receiver!!.send(shortMessage, -1)
     }
 
-    // 发送反馈信息（例如点亮按钮）
+    /**
+     * A shortcut to make lights of launchpad on
+     * @param type the type of light-on
+     * @param note the location of light-on, from 11 to 99
+     * @param color the color of light-on, 0 for shutting lights
+     * @see LightType
+     */
     fun sendFeedbackMessage(type: LightType, note: Int, color: Int = 0) {
         try {
             val lightMessage = byteArrayOf(
@@ -74,7 +91,6 @@ class Launchpad {
     }
 }
 
-// 匹配设备名称
 private fun MidiDevice.Info.matches(names: Array<out String>, direction: String): Boolean {
     return Arrays.stream(names)
         .anyMatch { name: String? -> this.name.contains(name!!) && this.name.contains(direction) }
