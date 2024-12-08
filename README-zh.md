@@ -22,8 +22,8 @@ launchpad.init("LPMiniMK3")
 
 使用 ```Launchpad.process(func: (MidiMessage, Long) -> Unit)``` 写入获取，处理midi信号的逻辑  
 
-使用 ```Launchpad.sendShortMessage(message: ByteArray)``` 发送简单信号，对 launchpad 而言是灯光信息。
-但请注意，_Novation Launchpad MK3 Mini_ 需要的 midi 信息是一个包含三元素的字节数组，分别表示通道，灯光位置，灯光颜色。
+使用 ```Launchpad.sendShortMessage(message: IntArray)``` 发送简单信号，对 launchpad 而言是灯光信息。
+但请注意，_Novation Launchpad MK3 Mini_ 需要的 midi 信息是一个包含三个数字的数组，分别表示通道，灯光位置，灯光颜色。
 _Novation Launchpad MK3 Mini_ 的灯光位置索引从11到99, 左下角开始， ```[i][j]``` 对应的位置的编码是 ij.
 _Novation Launchpad MK3 Mini_ 的颜色值可取 0~127, 可以在 [Programmers Reference Manual](https://fael-downloads-prod.focusrite.com/customer/prod/s3fs-public/downloads/Launchpad%20Mini%20-%20Programmers%20Reference%20Manual.pdf) 上参考查看  
 

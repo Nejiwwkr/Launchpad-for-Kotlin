@@ -11,7 +11,7 @@ class Launchpad {
     private var inputDevice: MidiDevice? = null
     private var outputDevice: MidiDevice? = null
     private var receiver: Receiver? = null
-    val padLights: Array<Int> = Array(100){_ -> 0}
+    private val padLights: Array<Int> = Array(100){_ -> 0}
 
     /**
      * Initialize the launchpad device.
@@ -28,12 +28,13 @@ class Launchpad {
                 outputDevice = MidiSystem.getMidiDevice(info)
         }
         if (inputDevice == null || outputDevice == null) {
-            throw MidiUnavailableException("未找到指定的 MIDI 设备")
+            logger.severe("Can't find specific midi device.")
+            throw MidiUnavailableException("Can't find specific midi device.")
         }
         inputDevice!!.open()
         outputDevice!!.open()
-        println("成功连接" + inputDevice.toString())
-        println("成功连接" + outputDevice.toString())
+        logger.info("Successfully Connected to:" + inputDevice.toString())
+        logger.info("Successfully Connected to:" + outputDevice.toString())
         receiver = outputDevice!!.receiver
     }
 
@@ -63,9 +64,9 @@ class Launchpad {
      * @param message the message to send
      */
     @Throws(InvalidMidiDataException::class)
-    fun sendShortMessage(message: ByteArray) {
+    fun sendShortMessage(message: IntArray) {
         val shortMessage = ShortMessage()
-        shortMessage.setMessage(message[0].toInt(), message[1].toInt(), message[2].toInt())
+        shortMessage.setMessage(message[0], message[1], message[2])
         receiver!!.send(shortMessage, -1)
     }
 
@@ -78,10 +79,10 @@ class Launchpad {
      */
     fun sendFeedbackMessage(type: LightType, note: Int, color: Int = 0) {
         try {
-            val lightMessage = byteArrayOf(
-                type.channel.toByte(),  // Note On, Channel 1
-                note.toByte(),  // Pad 编号
-                color.toByte() // 颜色
+            val lightMessage = intArrayOf(
+                type.channel,  // Note On, Channel 1
+                note,  // Location of light
+                color // Color of light
             )
             padLights[note] = color
             sendShortMessage(lightMessage)
@@ -89,6 +90,12 @@ class Launchpad {
             logger.severe(e.stackTrace.contentToString())
         }
     }
+
+    /**
+     * Get current light color.
+     * @param note the location of light-on, from 11 to 99
+     */
+    fun getCurrentLight(note: Int): Int = padLights[note]
 }
 
 private fun MidiDevice.Info.matches(names: Array<out String>, direction: String): Boolean {
