@@ -33,7 +33,7 @@ Use ```Launchpad.process(func: (MidiMessage, Long) -> Unit)``` to get and proces
 
 Use ```Launchpad.sendShortMessage(message: IntArray)``` to send a simple message。 
 But be careful, the message of _Novation Launchpad MK3 Mini_ is basically an integer array with 3 elements, including the channel, the location and the light color.
-The location code of _Novation Launchpad MK3 Mini_ is from 11 to 99, counted the left bottom and the location of ```[i][j]``` is actually ij.
+The location code of _Novation Launchpad MK3 Mini_ is from 11 to 99, counted from the left bottom. The location of ```[i][j]``` is actually ij.
 The color code of _Novation Launchpad MK3 Mini_ is 0~127, check it out on the [Programmers Reference Manual](https://fael-downloads-prod.focusrite.com/customer/prod/s3fs-public/downloads/Launchpad%20Mini%20-%20Programmers%20Reference%20Manual.pdf)  
 
 But ```Launchpad.sendFeedbackMessage(type: LightType, note: Int, color: Int)``` is more recommended.
