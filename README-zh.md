@@ -30,7 +30,7 @@ for (info in infos) {
 
 ## 处理 midi 信息
 
-使用 ```Launchpad.process(func: (MidiMessage, Long) -> Unit)``` 写入获取，处理midi信号的逻辑  
+使用 ```Launchpad.process(func: (MidiMessage, Long) -> Unit)``` 获取，处理midi信号的逻辑  
 
 使用 ```Launchpad.sendShortMessage(message: IntArray)``` 发送简单信号，对 launchpad 而言是灯光信息。
 但请注意，_Novation Launchpad MK3 Mini_ 需要的 midi 信息是一个包含三个数字的数组，分别表示通道，灯光位置，灯光颜色。
