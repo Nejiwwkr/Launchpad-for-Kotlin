@@ -1,4 +1,4 @@
-# Launchpad for kotlin
+# Launchpad for Kotlin
 
 This API is mainly designed for _Novation Launchpad MK3 Mini_. But I suppose this could still work for other launchpads.  
 

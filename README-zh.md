@@ -1,4 +1,4 @@
-# Launchpad for kotlin
+# Launchpad for Kotlin
 
 为 _Novation Launchpad MK3 Mini_ 设计的 API. 但对其他大部分厂商的 launchpad 应该仍然适用
 
