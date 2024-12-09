@@ -42,7 +42,7 @@ _Novation Launchpad MK3 Mini_ 的颜色值可取 0~127, 可以在 [Programmers R
 ```kotlin
 launchpad.process { message: MidiMessage, _: Long ->
     if (message is ShortMessage) {
-        if (data2 > 0) {
+        if (message.data2 > 0) {
             launchpad.sendFeedbackMessage(LightType.STATIC, message.data1, 5) //sending the red light
         } else {
             launchpad.sendFeedbackMessage(LightType.STATIC, message.data1) //removing light

@@ -41,7 +41,7 @@ But ```Launchpad.sendFeedbackMessage(type: LightType, note: Int, color: Int)``` 
 ```kotlin
 launchpad.process { message: MidiMessage, _: Long ->
     if (message is ShortMessage) {
-        if (data2 > 0) {
+        if (message.data2 > 0) {
             launchpad.sendFeedbackMessage(LightType.STATIC, message.data1, 5) //sending the red light
         } else {
             launchpad.sendFeedbackMessage(LightType.STATIC, message.data1) //removing light
