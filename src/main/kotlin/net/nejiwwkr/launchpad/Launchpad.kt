@@ -15,16 +15,16 @@ class Launchpad {
 
     /**
      * Initialize the launchpad device.
-     * @param names the name of your launchpad name in system
+     * @param name the name of your launchpad name in system
      */
     @Throws(MidiUnavailableException::class)
-    fun init(vararg names: String) {
+    fun init(name: String) {
         logger.info("Searching for devices...")
         val infos = MidiSystem.getMidiDeviceInfo()
         for (info in infos) {
-            if (info.matches(names, "MIDIIN"))
+            if (info.matches(name, "MIDIIN"))
                 inputDevice = MidiSystem.getMidiDevice(info)
-            if (info.matches(names, "MIDIOUT"))
+            if (info.matches(name, "MIDIOUT"))
                 outputDevice = MidiSystem.getMidiDevice(info)
         }
         if (inputDevice == null || outputDevice == null) {
@@ -39,8 +39,10 @@ class Launchpad {
     }
 
     /**
-     * Process midi messages.
-     * invoke repeatedly will overwrite the process before.
+     * Sets the processor for handling incoming MIDI messages.<br>
+     * Calling this method multiple times will replace any previously set message processor with the new one.<br>
+     * To retain multiple processing logics, implement composite logic within a single processor function.<p>
+     *
      * @param func the process
      */
     fun process(func: MidiMessageProcessor) {
@@ -77,10 +79,10 @@ class Launchpad {
      * @param color the color of light-on, 0 for shutting lights
      * @see LightType
      */
-    fun sendFeedbackMessage(type: LightType, note: Int, color: Int = 0) {
+    fun sendFeedbackMessage(type: Int = 0x90, note: Int, color: Int = 0) {
         try {
             val lightMessage = intArrayOf(
-                type.channel,  // Note On, Channel 1
+                type,  // Note On, Channel 1
                 note,  // Location of light
                 color // Color of light
             )
@@ -92,15 +94,25 @@ class Launchpad {
     }
 
     /**
+     * A shortcut to make lights of launchpad on
+     * @param type the type of light-on
+     * @param note the location of light-on, from 11 to 99
+     * @param color the color of light-on, 0 for shutting lights
+     * @see LightType
+     */
+    fun sendFeedbackMessage(type: LightType = LightType.STATIC, note: Int, color: Int = 0) {
+        sendFeedbackMessage(type.channel, note, color)
+    }
+
+    /**
      * Get current light color.
      * @param note the location of light-on, from 11 to 99
      */
     fun getCurrentLight(note: Int): Int = padLights[note]
 }
 
-private fun MidiDevice.Info.matches(names: Array<out String>, direction: String): Boolean {
-    return Arrays.stream(names)
-        .anyMatch { name: String? -> this.name.contains(name!!) && this.name.contains(direction) }
+private fun MidiDevice.Info.matches(name: String, direction: String): Boolean {
+    return this.name.contains(name) && this.name.contains(direction)
 }
 
 enum class LightType(val channel: Int) {

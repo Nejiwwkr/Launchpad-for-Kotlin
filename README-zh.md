@@ -18,6 +18,16 @@ val launchpad = Launchpad()
 launchpad.init("LPMiniMK3")
 ```
 
+提示: 如果你不知道你的launchpad设备名称，你可以试试运行以下代码。  
+
+```kotlin
+val infos = MidiSystem.getMidiDeviceInfo()
+for (info in infos) {
+    println("Name: ${info.name}, Vendor: ${info.vendor}, Description: ${info.description}")
+}
+```
+
+
 ## 处理 midi 信息
 
 使用 ```Launchpad.process(func: (MidiMessage, Long) -> Unit)``` 写入获取，处理midi信号的逻辑  
@@ -32,12 +42,10 @@ _Novation Launchpad MK3 Mini_ 的颜色值可取 0~127, 可以在 [Programmers R
 ```kotlin
 launchpad.process { message: MidiMessage, _: Long ->
     if (message is ShortMessage) {
-        if (message.command == ShortMessage.NOTE_ON) {
-            if (data2 > 0) {
-                launchpad.sendFeedbackMessage(LightType.STATIC, message.data1, 5) //使按下的键位亮起红色灯光
-                Thread.sleep(50L)
-                launchpad.sendFeedbackMessage(LightType.STATIC, message.data1) //清除灯光
-            }
+        if (data2 > 0) {
+            launchpad.sendFeedbackMessage(LightType.STATIC, message.data1, 5) //sending the red light
+        } else {
+            launchpad.sendFeedbackMessage(LightType.STATIC, message.data1) //removing light
         }
     }
 }
