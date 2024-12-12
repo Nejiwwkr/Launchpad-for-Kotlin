@@ -7,37 +7,7 @@ import javax.sound.midi.*
 typealias MidiMessageProcessor = (MidiMessage, Long) -> Unit
 val logger: Logger = Logger.getLogger("nejiwwkr.launchpad")
 
-class Launchpad {
-    private var inputDevice: MidiDevice? = null
-    private var outputDevice: MidiDevice? = null
-    private var receiver: Receiver? = null
-    private val padLights: Array<Int> = Array(100){_ -> 0}
-
-    /**
-     * Initialize the launchpad device.
-     * @param name the name of your launchpad name in system
-     */
-    @Throws(MidiUnavailableException::class)
-    fun init(name: String) {
-        logger.info("Searching for devices...")
-        val infos = MidiSystem.getMidiDeviceInfo()
-        for (info in infos) {
-            if (info.matches(name, "MIDIIN"))
-                inputDevice = MidiSystem.getMidiDevice(info)
-            if (info.matches(name, "MIDIOUT"))
-                outputDevice = MidiSystem.getMidiDevice(info)
-        }
-        if (inputDevice == null || outputDevice == null) {
-            logger.severe("Can't find specific midi device.")
-            throw MidiUnavailableException("Can't find specific midi device.")
-        }
-        inputDevice!!.open()
-        outputDevice!!.open()
-        logger.info("Successfully Connected to:" + inputDevice.toString())
-        logger.info("Successfully Connected to:" + outputDevice.toString())
-        receiver = outputDevice!!.receiver
-    }
-
+class Launchpad: BaseLaunchpad() {
     /**
      * Sets the processor for handling incoming MIDI messages.<br>
      * Calling this method multiple times will replace any previously set message processor with the new one.<br>
@@ -66,7 +36,7 @@ class Launchpad {
      * @param message the message to send
      */
     @Throws(InvalidMidiDataException::class)
-    fun sendShortMessage(message: IntArray) {
+    override fun sendShortMessage(message: IntArray) {
         val shortMessage = ShortMessage()
         shortMessage.setMessage(message[0], message[1], message[2])
         receiver!!.send(shortMessage, -1)
@@ -79,10 +49,21 @@ class Launchpad {
      * @param color the color of light-on, 0 for shutting lights
      * @see LightType
      */
-    fun sendFeedbackMessage(type: Int = 0x90, note: Int, color: Int = 0) {
+    override fun sendFeedbackMessage(type: Int, note: Int, color: Int) {
+        sendFeedbackMessage(phraseIntToLightType(type), note, color)
+    }
+
+    /**
+     * A shortcut to make lights of launchpad on
+     * @param type the type of light-on
+     * @param note the location of light-on, from 11 to 99
+     * @param color the color of light-on, 0 for shutting lights
+     * @see LightType
+     */
+    override fun sendFeedbackMessage(type: LightType, note: Int, color: Int) {
         try {
             val lightMessage = intArrayOf(
-                type,  // Note On, Channel 1
+                type.channel,  // Note On, Channel 1
                 note,  // Location of light
                 color // Color of light
             )
@@ -93,28 +74,5 @@ class Launchpad {
         }
     }
 
-    /**
-     * A shortcut to make lights of launchpad on
-     * @param type the type of light-on
-     * @param note the location of light-on, from 11 to 99
-     * @param color the color of light-on, 0 for shutting lights
-     * @see LightType
-     */
-    fun sendFeedbackMessage(type: LightType = LightType.STATIC, note: Int, color: Int = 0) {
-        sendFeedbackMessage(type.channel, note, color)
-    }
 
-    /**
-     * Get current light color.
-     * @param note the location of light-on, from 11 to 99
-     */
-    fun getCurrentLight(note: Int): Int = padLights[note]
-}
-
-private fun MidiDevice.Info.matches(name: String, direction: String): Boolean {
-    return this.name.contains(name) && this.name.contains(direction)
-}
-
-enum class LightType(val channel: Int) {
-    STATIC(0x90), FLASHING(0x91), PULSING(0x92)
 }
