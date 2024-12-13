@@ -12,28 +12,24 @@ class ConcurrentLaunchpad: BaseLaunchpad() {
     private val padLightsLock = ReentrantReadWriteLock()
 
     init {
-        Runtime.getRuntime().addShutdownHook(Thread { close() })
+        Runtime.getRuntime().addShutdownHook(Thread { shutdown() })
     }
 
     /**
      * Set a listener for a specific button position.
+     * @param func a function of **(commandType, velocity) -> Unit** as the listener
+     * @param pos the certain position
      */
     fun setOnListener(func: MidiListener, pos: Int) {
         listeners[pos] = func
     }
 
     /**
-     * Send a MIDI message to the Launchpad.
-     */
-    @Throws(InvalidMidiDataException::class)
-    override fun sendShortMessage(message: IntArray) {
-        val shortMessage = ShortMessage()
-        shortMessage.setMessage(message[0],message[1],message[2])
-        receiver?.send(shortMessage, -1)
-    }
-
-    /**
-     * Shortcut to turn on/off lights on the Launchpad.
+     * A shortcut to make lights of launchpad on, always thread safe
+     * @param type the type of light-on
+     * @param note the location of light-on, from 11 to 99
+     * @param color the color of light-on, 0 for shutting lights
+     * @see LightType
      */
     override fun sendFeedbackMessage(type: LightType, note: Int, color: Int) {
         padLightsLock.writeLock().lock()
@@ -45,12 +41,9 @@ class ConcurrentLaunchpad: BaseLaunchpad() {
         }
     }
 
-    override fun sendFeedbackMessage(type: Int, note: Int, color: Int) {
-        sendFeedbackMessage(phraseIntToLightType(type), note, color)
-    }
-
     /**
-     * Get current light color of a button.
+     * A thread safe version to get current light color of a button.
+     * @param note the location of light-on, from 11 to 99
      */
     override fun getCurrentLight(note: Int): Int {
         padLightsLock.readLock().lock()
@@ -64,7 +57,7 @@ class ConcurrentLaunchpad: BaseLaunchpad() {
     /**
      * Shutdown the service and close devices.
      */
-    fun close() {
+    fun shutdown() {
         executorService.shutdownNow()
         inputDevice?.close()
         outputDevice?.close()

@@ -1,11 +1,8 @@
 package net.nejiwwkr.launchpad
 
-import java.util.*
-import java.util.logging.Logger
 import javax.sound.midi.*
 
 typealias MidiMessageProcessor = (MidiMessage, Long) -> Unit
-val logger: Logger = Logger.getLogger("nejiwwkr.launchpad")
 
 class Launchpad: BaseLaunchpad() {
     /**
@@ -31,29 +28,6 @@ class Launchpad: BaseLaunchpad() {
     }
 
     /**
-     * Send midi messages.
-     * Midi message for launchpad is a byte array with 3 elements, including the channel, the location and the light color.
-     * @param message the message to send
-     */
-    @Throws(InvalidMidiDataException::class)
-    override fun sendShortMessage(message: IntArray) {
-        val shortMessage = ShortMessage()
-        shortMessage.setMessage(message[0], message[1], message[2])
-        receiver!!.send(shortMessage, -1)
-    }
-
-    /**
-     * A shortcut to make lights of launchpad on
-     * @param type the type of light-on
-     * @param note the location of light-on, from 11 to 99
-     * @param color the color of light-on, 0 for shutting lights
-     * @see LightType
-     */
-    override fun sendFeedbackMessage(type: Int, note: Int, color: Int) {
-        sendFeedbackMessage(phraseIntToLightType(type), note, color)
-    }
-
-    /**
      * A shortcut to make lights of launchpad on
      * @param type the type of light-on
      * @param note the location of light-on, from 11 to 99
@@ -73,6 +47,4 @@ class Launchpad: BaseLaunchpad() {
             logger.severe(e.stackTrace.contentToString())
         }
     }
-
-
 }
