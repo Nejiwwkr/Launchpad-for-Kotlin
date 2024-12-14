@@ -23,7 +23,7 @@ __For Novation users, you need to turn your launchpad to _programme mode_ first.
 
 ### Initialization
 
-Passing the identity name of your launchpad device to ```Launchpad.init()```.
+Passing the identity name of your launchpad device to `Launchpad.init()`.
 
 ```kotlin
 val launchpad = Launchpad()
@@ -41,14 +41,14 @@ for (info in infos) {
 
 ### Processing message
 
-Use ```Launchpad.process(func: (MidiMessage, Long) -> Unit)``` to get and process the hit on your launchpad.  
+Use `Launchpad.process(func: (MidiMessage, Long) -> Unit)` to get and process the hit on your launchpad.  
 
-Use ```Launchpad.sendShortMessage(message: IntArray)``` to send a simple message。 
+Use `Launchpad.sendShortMessage(message: IntArray)` to send a simple message。 
 But be careful, the message of _Novation Launchpad MK3 Mini_ is basically an integer array with 3 elements, including the channel, the location and the light color.
-The location code of _Novation Launchpad MK3 Mini_ is from 11 to 99, counted from the left bottom. The location of ```[i][j]``` is actually ij.
+The location code of _Novation Launchpad MK3 Mini_ is from 11 to 99, counted from the left bottom. The location of `[i][j]` is actually ij.
 The color code of _Novation Launchpad MK3 Mini_ is 0~127, check it out on the [Programmers Reference Manual](https://fael-downloads-prod.focusrite.com/customer/prod/s3fs-public/downloads/Launchpad%20Mini%20-%20Programmers%20Reference%20Manual.pdf)  
 
-But ```Launchpad.sendFeedbackMessage(type: LightType, note: Int, color: Int)``` is more recommended.
+But `Launchpad.sendFeedbackMessage(type: LightType, note: Int, color: Int)` is more recommended.
 
 ```kotlin
 launchpad.process { message: MidiMessage, _: Long ->
@@ -69,17 +69,30 @@ This class supports registering listeners for specific button positions and mana
 
 ```kotlin
 val concurrentLaunchpad = ConcurrentLaunchpad()
-concurrentLaunchpad.setOnListener({ _: Int, velocity: Int -> // commandType, velocity
+concurrentLaunchpad.init("LPMiniMK3")
+concurrentLaunchpad.setOnListener(11){ _: Int, velocity: Int -> // commandType, velocity
     if (velocity > 0) {
         concurrentLaunchpad.sendFeedbackMessage(LightType.STATIC, 11, 5) //sending the red light
     } else {
         concurrentLaunchpad.sendFeedbackMessage(LightType.STATIC, 11) //removing light
     }
-}, pos = 11)
+}
+concurrentLaunchpad.start()
+```
+
+or a shorter version of extension function like this:
+
+```kotlin
+val concurrentLaunchpad = ConcurrentLaunchpad()
+concurrentLaunchpad.init("LPMiniMK3")
+concurrentLaunchpad.setOnSingleClickListener(11, 5)
+concurrentLaunchpad.start()
 ```
 
 #### Shutdown
+
 When you're done using the `ConcurrentLaunchpad`, remember to close the connection to free up resources:
+
 ```kotlin
-concurrentLaunchpad.close()
+concurrentLaunchpad.shutdown()
 ```

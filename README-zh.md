@@ -23,7 +23,7 @@ __对于 Novation 使用者, 你需要先将你的 launchpad 调至 _programme m
 
 ### 初始化 launchpad
 
-将你的 launchpad 系统名传递给 ```Launchpad.init()```.
+将你的 launchpad 系统名传递给 `Launchpad.init()`.
 
 ```kotlin
 val launchpad = Launchpad()
@@ -39,25 +39,24 @@ for (info in infos) {
 }
 ```
 
-
 ### 处理 midi 信息
 
-使用 ```Launchpad.process(func: (MidiMessage, Long) -> Unit)``` 获取，处理 midi 信号的逻辑  
+使用 `Launchpad.process(func: (MidiMessage, Long) -> Unit)` 获取，处理 midi 信号的逻辑  
 
-使用 ```Launchpad.sendShortMessage(message: IntArray)``` 发送简单信号，对 launchpad 而言是灯光信息。
+使用 `Launchpad.sendShortMessage(message: IntArray)` 发送简单信号，对 launchpad 而言是灯光信息。
 但请注意，_Novation Launchpad MK3 Mini_ 需要的 midi 信息是一个包含三个数字的数组，分别表示通道，灯光位置，灯光颜色。
-_Novation Launchpad MK3 Mini_ 的灯光位置索引从11到99, 左下角开始。 ```[i][j]``` 对应的位置的编码是 ij.
+_Novation Launchpad MK3 Mini_ 的灯光位置索引从11到99, 左下角开始。 `[i][j]` 对应的位置的编码是 ij.
 _Novation Launchpad MK3 Mini_ 的颜色值可取0~127, 可以在 [Programmers Reference Manual](https://fael-downloads-prod.focusrite.com/customer/prod/s3fs-public/downloads/Launchpad%20Mini%20-%20Programmers%20Reference%20Manual.pdf) 上参考查看  
 
-但其实更推荐这个方法：```Launchpad.sendFeedbackMessage(type: LightType, note: Int, color: Int)```
+但其实更推荐这个方法：`Launchpad.sendFeedbackMessage(type: LightType, note: Int, color: Int)`
 
 ```kotlin
 launchpad.process { message: MidiMessage, _: Long ->
     if (message is ShortMessage) {
         if (message.data2 > 0) {
-            launchpad.sendFeedbackMessage(LightType.STATIC, message.data1, 5) //sending the red light
+            launchpad.sendFeedbackMessage(LightType.STATIC, message.data1, 5) //发送红色灯光信号
         } else {
-            launchpad.sendFeedbackMessage(LightType.STATIC, message.data1) //removing light
+            launchpad.sendFeedbackMessage(LightType.STATIC, message.data1) //移除灯光
         }
     }
 }
@@ -70,13 +69,24 @@ launchpad.process { message: MidiMessage, _: Long ->
 
 ```kotlin
 val concurrentLaunchpad = ConcurrentLaunchpad()
-concurrentLaunchpad.setOnListener({ _: Int, velocity: Int -> // commandType, velocity
+concurrentLaunchpad.init("LPMiniMK3")
+concurrentLaunchpad.setOnListener(11){ _: Int, velocity: Int -> // 指令类型，力度
     if (velocity > 0) {
-        concurrentLaunchpad.sendFeedbackMessage(LightType.STATIC, 11, 5) //sending the red light
+        concurrentLaunchpad.sendFeedbackMessage(LightType.STATIC, 11, 5) //发送红色灯光信号
     } else {
-        concurrentLaunchpad.sendFeedbackMessage(LightType.STATIC, 11) //removing light
+        concurrentLaunchpad.sendFeedbackMessage(LightType.STATIC, 11) //移除灯光
     }
-}, pos = 11)
+}
+concurrentLaunchpad.start()
+```
+
+不妨尝试更加简洁的拓展方法：
+
+```kotlin
+val concurrentLaunchpad = ConcurrentLaunchpad()
+concurrentLaunchpad.init("LPMiniMK3")
+concurrentLaunchpad.setOnSingleClickListener(11, 5)
+concurrentLaunchpad.start()
 ```
 
 #### 释放资源
@@ -84,5 +94,5 @@ concurrentLaunchpad.setOnListener({ _: Int, velocity: Int -> // commandType, vel
 当你使用完 `ConcurrentLaunchpad` 后，记得关闭连接以释放资源：
 
 ```kotlin
-concurrentLaunchpad.close()
+concurrentLaunchpad.shutdown()
 ```

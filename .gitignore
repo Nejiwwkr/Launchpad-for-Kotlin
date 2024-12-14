@@ -3,7 +3,8 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-/src/main/kotlin/net/nejiwwkr/launchpad/Main.kt
+/src/test/kotlin/net/nejiwwkr/launchpad/Main.kt
+/src/test/kotlin/net/nejiwwkr/launchpad/ConcurrentTest.kt
 
 
 ### IntelliJ IDEA ###
