@@ -84,9 +84,11 @@ or a shorter version of extension function like this:
 
 ```kotlin
 val concurrentLaunchpad = ConcurrentLaunchpad()
-concurrentLaunchpad.init("LPMiniMK3")
-concurrentLaunchpad.setOnSingleClickListener(11, 5)
-concurrentLaunchpad.start()
+with<ConcurrentLaunchpad, Unit>(concurrentLaunchpad) {
+    init("LPMiniMK3")
+    setOnSingleClickListener(11, 5)
+    start()
+}
 ```
 
 #### Shutdown

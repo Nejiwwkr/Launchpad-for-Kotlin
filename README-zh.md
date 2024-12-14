@@ -84,9 +84,11 @@ concurrentLaunchpad.start()
 
 ```kotlin
 val concurrentLaunchpad = ConcurrentLaunchpad()
-concurrentLaunchpad.init("LPMiniMK3")
-concurrentLaunchpad.setOnSingleClickListener(11, 5)
-concurrentLaunchpad.start()
+with<ConcurrentLaunchpad, Unit>(concurrentLaunchpad) {
+    init("LPMiniMK3")
+    setOnSingleClickListener(11, 5)
+    start()
+}
 ```
 
 #### 释放资源
