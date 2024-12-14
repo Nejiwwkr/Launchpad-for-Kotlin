@@ -4,7 +4,10 @@ import java.util.concurrent.*
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import javax.sound.midi.*
 
-typealias MidiListener = (Int, Int) -> Unit // (commandType, velocity) -> Unit
+/**
+ * function for (commandType, velocity) -> Process
+ */
+typealias MidiListener = (Int, Int) -> Unit
 
 class ConcurrentLaunchpad: BaseLaunchpad() {
     private val listeners = ConcurrentHashMap<Int, MidiListener>()
@@ -17,10 +20,12 @@ class ConcurrentLaunchpad: BaseLaunchpad() {
 
     /**
      * Set a listener for a specific button position.
-     * @param func a function of **(commandType, velocity) -> Unit** as the listener
+     * @param func a function of [MidiListener] as the listener
      * @param pos the certain position
+     * @see setOnCrossPatternListener
+     * @see setOnSingleClickListener
      */
-    fun setOnListener(func: MidiListener, pos: Int) {
+    fun setOnListener(pos: Int, func: MidiListener) {
         listeners[pos] = func
     }
 
@@ -39,6 +44,17 @@ class ConcurrentLaunchpad: BaseLaunchpad() {
         } finally {
             padLightsLock.writeLock().unlock()
         }
+    }
+
+    /**
+     * A shortcut to make lights of launchpad on
+     * @param type the type of light-on
+     * @param note the location of light-on, from 11 to 99
+     * @param color the color of light-on, 0 for shutting lights
+     * @see LightType
+     */
+    override fun sendFeedbackMessage(type: Int, note: Int, color: Int) {
+        sendFeedbackMessage(LightType.fromInt(type), note, color)
     }
 
     /**

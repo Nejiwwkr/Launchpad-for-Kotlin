@@ -47,4 +47,15 @@ class Launchpad: BaseLaunchpad() {
             logger.severe(e.stackTrace.contentToString())
         }
     }
+
+    /**
+     * A shortcut to make lights of launchpad on
+     * @param type the type of light-on
+     * @param note the location of light-on, from 11 to 99
+     * @param color the color of light-on, 0 for shutting lights
+     * @see LightType
+     */
+    override fun sendFeedbackMessage(type: Int, note: Int, color: Int) {
+        sendFeedbackMessage(LightType.fromInt(type), note, color)
+    }
 }

@@ -42,6 +42,7 @@ abstract class BaseLaunchpad : AbstractLaunchpad {
         outputDevice!!.open()
         logger.info("Successfully Connected to: ${inputDevice.toString()}")
         logger.info("Successfully Connected to: ${outputDevice.toString()}")
+        receiver = outputDevice!!.receiver
     }
 
     /**
@@ -54,17 +55,6 @@ abstract class BaseLaunchpad : AbstractLaunchpad {
         val shortMessage = ShortMessage()
         shortMessage.setMessage(message[0], message[1], message[2])
         receiver!!.send(shortMessage, -1)
-    }
-
-    /**
-     * A shortcut to make lights of launchpad on
-     * @param type the type of light-on
-     * @param note the location of light-on, from 11 to 99
-     * @param color the color of light-on, 0 for shutting lights
-     * @see LightType
-     */
-    override fun sendFeedbackMessage(type: Int, note: Int, color: Int) {
-        sendFeedbackMessage(LightType.fromInt(type), note, color)
     }
 
     /**
