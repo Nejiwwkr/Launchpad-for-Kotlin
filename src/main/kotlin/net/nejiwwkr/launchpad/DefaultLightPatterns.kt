@@ -1,7 +1,7 @@
 package net.nejiwwkr.launchpad
 
 /**
- * 设置一个十字形监听器
+ * set a listener for cross pattern light.
  */
 fun ConcurrentLaunchpad.setOnCrossPatternListener(pos: Int, color: Int){
     this.setOnListener(pos) { _, velocity ->
@@ -39,12 +39,12 @@ fun ConcurrentLaunchpad.setOnCrossPatternListener(pos: Int, color: Int){
 }
 
 /**
- * 创建一个单击监听器
+ * set a listener for single click
  */
 fun ConcurrentLaunchpad.setOnSingleClickListener(pos: Int, color: Int) {
     this.setOnListener(pos){ _: Int, velocity: Int -> // commandType, velocity
         if (velocity > 0) {
-            this.sendFeedbackMessage(LightType.STATIC, pos, color) //sending the red light
+            this.sendFeedbackMessage(LightType.STATIC, pos, color) //sending the light
         } else {
             this.sendFeedbackMessage(LightType.STATIC, pos) //removing light
         }
