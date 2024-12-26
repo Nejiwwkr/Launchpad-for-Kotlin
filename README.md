@@ -86,7 +86,7 @@ or a shorter version of extension function like this:
 val concurrentLaunchpad = ConcurrentLaunchpad()
 with<ConcurrentLaunchpad, Unit>(concurrentLaunchpad) {
     init("LPMiniMK3")
-    setOnSingleClickListener(11, 5)
+    setOnSingleClickListener(11, 5, 30L, 100L)
     start()
 }
 ```
