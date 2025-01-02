@@ -3,7 +3,7 @@ package net.nejiwwkr.launchpad
 /**
  * set a listener for cross pattern light.
  */
-fun ConcurrentLaunchpad.setOnCrossPatternListener(pos: Int, color: Int, frequency: Long, internal: Long){
+fun ConcurrentLaunchpad.setOnCrossPatternListener(pos: Int, color: Int, frequency: Long, internal: Long) {
     this.setOnListener(pos) { _, velocity ->
         if (velocity <= 0) return@setOnListener
 
@@ -44,7 +44,7 @@ fun ConcurrentLaunchpad.setOnCrossPatternListener(pos: Int, color: Int, frequenc
 /**
  * set a listener for horizontal line pattern light.
  */
-fun ConcurrentLaunchpad.setOnHorizontalLinePatternListener(pos: Int, color: Int, frequency: Long, interval: Long){
+fun ConcurrentLaunchpad.setOnHorizontalLinePatternListener(pos: Int, color: Int, frequency: Long, interval: Long) {
     this.setOnListener(pos) { _, velocity ->
         if (velocity <= 0) return@setOnListener
 
@@ -77,7 +77,7 @@ fun ConcurrentLaunchpad.setOnHorizontalLinePatternListener(pos: Int, color: Int,
 /**
  * set a listener for vertical line pattern light.
  */
-fun ConcurrentLaunchpad.setOnVerticalLinePatternListener(pos: Int, color: Int, frequency: Long, interval: Long){
+fun ConcurrentLaunchpad.setOnVerticalLinePatternListener(pos: Int, color: Int, frequency: Long, interval: Long) {
     this.setOnListener(pos) { _, velocity ->
         if (velocity <= 0) return@setOnListener
 
