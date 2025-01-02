@@ -86,7 +86,7 @@ concurrentLaunchpad.start()
 val concurrentLaunchpad = ConcurrentLaunchpad()
 with<ConcurrentLaunchpad, Unit>(concurrentLaunchpad) {
     init("LPMiniMK3")
-    setOnSingleClickListener(11, 5)
+    setOnLongClickListener(11, 5)
     start()
 }
 ```

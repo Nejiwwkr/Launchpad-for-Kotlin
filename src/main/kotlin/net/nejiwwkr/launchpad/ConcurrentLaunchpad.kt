@@ -23,7 +23,7 @@ class ConcurrentLaunchpad: BaseLaunchpad() {
      * @param func a function of [MidiListener] as the listener
      * @param pos the certain position
      * @see setOnCrossPatternListener
-     * @see setOnSingleClickListener
+     * @see setOnLongClickListener
      */
     fun setOnListener(pos: Int, func: MidiListener) {
         listeners[pos] = func

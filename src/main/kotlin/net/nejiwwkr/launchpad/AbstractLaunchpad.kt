@@ -1,6 +1,5 @@
 package net.nejiwwkr.launchpad
 
-import java.net.PortUnreachableException
 import java.util.logging.Logger
 import javax.sound.midi.*
 
@@ -14,7 +13,7 @@ interface AbstractLaunchpad {
     fun getCurrentLight(note: Int): Int
 }
 
-abstract class BaseLaunchpad : AbstractLaunchpad {
+abstract class BaseLaunchpad: AbstractLaunchpad {
     protected open var inputDevice: MidiDevice? = null
     protected open var outputDevice: MidiDevice? = null
     private var receiver: Receiver? = null
@@ -73,7 +72,7 @@ enum class LightType(val channel: Int) {
                 0x90 -> STATIC
                 0x91 -> FLASHING
                 0x92 -> PULSING
-                else -> throw PortUnreachableException()
+                else -> throw IllegalStateException()
             }
         }
     }

@@ -44,7 +44,7 @@ fun ConcurrentLaunchpad.setOnCrossPatternListener(pos: Int, color: Int, frequenc
 /**
  * set a listener for horizontal line pattern light.
  */
-fun ConcurrentLaunchpad.setOnHorizontalLinePatternListener(pos: Int, color: Int, frequency: Long, internal: Long){
+fun ConcurrentLaunchpad.setOnHorizontalLinePatternListener(pos: Int, color: Int, frequency: Long, interval: Long){
     this.setOnListener(pos) { _, velocity ->
         if (velocity <= 0) return@setOnListener
 
@@ -60,7 +60,7 @@ fun ConcurrentLaunchpad.setOnHorizontalLinePatternListener(pos: Int, color: Int,
             Thread.sleep(frequency)
         }
 
-        Thread.sleep(internal)
+        Thread.sleep(interval)
 
         this.sendFeedbackMessage(0x90, pos, 0)
         Thread.sleep(frequency)
@@ -77,7 +77,7 @@ fun ConcurrentLaunchpad.setOnHorizontalLinePatternListener(pos: Int, color: Int,
 /**
  * set a listener for vertical line pattern light.
  */
-fun ConcurrentLaunchpad.setOnVerticalLinePatternListener(pos: Int, color: Int, frequency: Long, internal: Long){
+fun ConcurrentLaunchpad.setOnVerticalLinePatternListener(pos: Int, color: Int, frequency: Long, interval: Long){
     this.setOnListener(pos) { _, velocity ->
         if (velocity <= 0) return@setOnListener
 
@@ -93,7 +93,7 @@ fun ConcurrentLaunchpad.setOnVerticalLinePatternListener(pos: Int, color: Int, f
             Thread.sleep(frequency)
         }
 
-        Thread.sleep(internal)
+        Thread.sleep(interval)
 
         this.sendFeedbackMessage(0x90, pos, 0)
         Thread.sleep(frequency)
@@ -108,13 +108,26 @@ fun ConcurrentLaunchpad.setOnVerticalLinePatternListener(pos: Int, color: Int, f
 }
 
 /**
- * set a listener for single click
+ * set a listener for a long on-off single click
  */
-fun ConcurrentLaunchpad.setOnSingleClickListener(pos: Int, color: Int) {
+fun ConcurrentLaunchpad.setOnLongClickListener(pos: Int, color: Int) {
     this.setOnListener(pos){ _: Int, velocity: Int -> // commandType, velocity
         if (velocity > 0) {
             this.sendFeedbackMessage(LightType.STATIC, pos, color) //sending the light
         } else {
+            this.sendFeedbackMessage(LightType.STATIC, pos) //removing light
+        }
+    }
+}
+
+/**
+ * set a listener for a single click
+ */
+fun ConcurrentLaunchpad.setOnSingleClickListener(pos: Int, color: Int, interval: Long) {
+    this.setOnListener(pos){ _: Int, velocity: Int -> // commandType, velocity
+        if (velocity > 0) {
+            this.sendFeedbackMessage(LightType.STATIC, pos, color) //sending the light
+            Thread.sleep(interval)
             this.sendFeedbackMessage(LightType.STATIC, pos) //removing light
         }
     }
