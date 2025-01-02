@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="launchpad 1.0a">
+    <output-path>$PROJECT_DIR$/out/artifacts/launchpad_1_0a</output-path>
+    <root id="archive" name="launchpad 1.0a.jar" />
+  </artifact>
+</component>
