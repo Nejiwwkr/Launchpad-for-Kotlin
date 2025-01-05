@@ -15,7 +15,7 @@ class ConcurrentLaunchpad: BaseLaunchpad() {
     private val padLightsLock = ReentrantReadWriteLock()
 
     init {
-        Runtime.getRuntime().addShutdownHook(Thread { shutdown() })
+        Runtime.getRuntime().addShutdownHook(Thread { shutdown() } )
     }
 
     /**

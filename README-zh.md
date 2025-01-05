@@ -70,7 +70,7 @@ launchpad.process { message: MidiMessage, _: Long ->
 ```kotlin
 val concurrentLaunchpad = ConcurrentLaunchpad()
 concurrentLaunchpad.init("LPMiniMK3")
-concurrentLaunchpad.setOnListener(11){ _: Int, velocity: Int -> // 指令类型，力度
+concurrentLaunchpad.setOnListener(11) { _: Int, velocity: Int -> // 指令类型，力度
     if (velocity > 0) {
         concurrentLaunchpad.sendFeedbackMessage(LightType.STATIC, 11, 5) //发送红色灯光信号
     } else {

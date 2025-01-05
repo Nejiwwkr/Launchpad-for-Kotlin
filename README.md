@@ -70,7 +70,7 @@ This class supports registering listeners for specific button positions and mana
 ```kotlin
 val concurrentLaunchpad = ConcurrentLaunchpad()
 concurrentLaunchpad.init("LPMiniMK3")
-concurrentLaunchpad.setOnListener(11){ _: Int, velocity: Int -> // commandType, velocity
+concurrentLaunchpad.setOnListener(11) { _: Int, velocity: Int -> // commandType, velocity
     if (velocity > 0) {
         concurrentLaunchpad.sendFeedbackMessage(LightType.STATIC, 11, 5) //sending the red light
     } else {
