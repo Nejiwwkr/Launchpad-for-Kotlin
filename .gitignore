@@ -6,6 +6,8 @@ target/
 /src/test/kotlin/net/nejiwwkr/launchpad/Main.kt
 /src/test/kotlin/net/nejiwwkr/launchpad/ConcurrentTest.kt
 
+out/artifacts/launchpad_1_0a/*.jar
+
 
 ### IntelliJ IDEA ###
 .idea/modules.xml

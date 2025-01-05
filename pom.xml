@@ -6,7 +6,7 @@
 
     <groupId>net.nejiwwkr</groupId>
     <artifactId>launchpad</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0a</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -92,4 +92,11 @@
         </plugins>
     </build>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>Nejiwwkr</name>
+            <url>https://maven.pkg.github.com/Nejiwwkr/Launchpad-for-Kotlin</url>
+        </repository>
+    </distributionManagement>
 </project>
